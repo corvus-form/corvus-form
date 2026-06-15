@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Corvus Arquitectura — Consulta inicial</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @font-face {
+    font-family: 'Glamorise';
+    src: url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/cormorantgaramond/CormorantGaramond-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  :root {
+    --bg: #F9F6F1;
+    --text: #B79A7A;
+    --text-muted: #C9B49A;
+    --border: #DDD8CF;
+    --btn-bg: #B79A7A;
+    --btn-text: #F9F6F1;
+  }
+
+  html, body {
+    min-height: 100%;
+    background: var(--bg);
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text);
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 3rem 1.25rem 4rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 2.5rem;
+  }
+  .logo-corvus {
+    font-family: 'Glamorise', 'Cormorant Garamond', Georgia, serif;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .logo-arq {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .progress-wrap {
+    height: 1.5px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2.75rem;
+  }
+  .progress-bar {
+    height: 1.5px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .step-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .question {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.45;
+    margin-bottom: 0.4rem;
+  }
+
+  .hint {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text);
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    line-height: 1.4;
+  }
+  .opt:hover { border-color: var(--btn-bg); background: rgba(183,154,122,0.08); }
+  .opt.selected {
+    border-color: var(--btn-bg);
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    font-weight: 500;
+  }
+
+  .opt-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .opt.selected .opt-dot {
+    background: var(--btn-text);
+    border-color: var(--btn-text);
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text);
+    background: transparent;
+    outline: none;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  textarea::placeholder, input::placeholder { color: var(--text-muted); }
+  textarea:focus, input[type="text"]:focus { border-color: var(--btn-bg); }
+
+  .extra-input { margin-top: 10px; }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2rem;
+  }
+
+  .btn-back {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    padding: 0;
+  }
+  .btn-back:hover { color: var(--text); }
+
+  .btn-next {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 11px 26px;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-next:not(:disabled):hover { opacity: 0.85; }
+
+  .mail-note {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    line-height: 1.9;
+    margin-top: 0.5rem;
+  }
+  .mail-note a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+
+  .thanks-title {
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.45;
+  }
+  .thanks-body {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    line-height: 1.9;
+    margin-bottom: 2.25rem;
+  }
+  .btn-cal {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 13px 30px;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn-cal:hover { opacity: 0.85; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 2rem 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo">
+    <span class="logo-corvus">CORVUS</span>
+    <span class="logo-arq">Arquitectura</span>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar" id="prog" style="width: 14%"></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step active" id="s1">
+    <div class="step-label">01 — 07</div>
+    <div class="question">¿Qué tipo de proyecto querés realizar?</div>
+    <div class="options">
+      <button class="opt" onclick="selectAuto(this,'tipo','Reforma integral',2)"><span class="opt-dot"></span>Reforma integral</button>
+      <button class="opt" onclick="selectAuto(this,'tipo','Ampliación',2)"><span class="opt-dot"></span>Ampliación</button>
+      <button class="opt" onclick="selectAuto(this,'tipo','Reforma + ampliación',2)"><span class="opt-dot"></span>Reforma + ampliación</button>
+      <button class="opt" onclick="selectAuto(this,'tipo','Obra nueva',2)"><span class="opt-dot"></span>Obra nueva</button>
+    </div>
+    <div class="nav"><span></span></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="s2">
+    <div class="step-label">02 — 07</div>
+    <div class="question">¿Dónde está ubicada la propiedad?</div>
+    <div class="hint">Barrio, localidad o dirección aproximada.</div>
+    <input type="text" id="ubicacion" placeholder="Ej: Palermo, CABA" oninput="checkText('ubicacion','n2')" />
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(1)">← Volver</button>
+      <button class="btn-next" id="n2" onclick="goTo(3)" disabled>Continuar</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" id="s3">
+    <div class="step-label">03 — 07</div>
+    <div class="question">Aproximadamente, ¿qué superficie querés intervenir?</div>
+    <div class="options">
+      <button class="opt" onclick="selectAuto(this,'sup','15–40 m²',4)"><span class="opt-dot"></span>15–40 m²</button>
+      <button class="opt" onclick="selectAuto(this,'sup','40–80 m²',4)"><span class="opt-dot"></span>40–80 m²</button>
+      <button class="opt" onclick="selectAuto(this,'sup','80–120 m²',4)"><span class="opt-dot"></span>80–120 m²</button>
+      <button class="opt" onclick="selectAuto(this,'sup','120–180 m²',4)"><span class="opt-dot"></span>120–180 m²</button>
+      <button class="opt" onclick="selectAuto(this,'sup','Más de 200 m²',4)"><span class="opt-dot"></span>Más de 200 m²</button>
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(2)">← Volver</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" id="s4">
+    <div class="step-label">04 — 07</div>
+    <div class="question">Contanos brevemente qué te gustaría lograr.</div>
+    <div class="hint">Sin presiones, cualquier mensaje nos ayuda y lo continuaremos conversando en la reunión.</div>
+    <textarea id="objetivo" rows="4" placeholder="Ej: Quiero integrar cocina y living, renovar los baños..." oninput="checkText('objetivo','n4')"></textarea>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(3)">← Volver</button>
+      <button class="btn-next" id="n4" onclick="goTo(5)" disabled>Continuar</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" id="s5">
+    <div class="step-label">05 — 07</div>
+    <div class="question">¿Cuánto deseás invertir?</div>
+    <div class="hint">Es un valor orientativo que nos ayuda a comprender el alcance de la reforma que imaginás.</div>
+    <div class="options">
+      <button class="opt" onclick="selectAuto(this,'presup','Menos de USD 20.000',6)"><span class="opt-dot"></span>Menos de USD 20.000</button>
+      <button class="opt" onclick="selectAuto(this,'presup','USD 20.000 – 50.000',6)"><span class="opt-dot"></span>USD 20.000 – 50.000</button>
+      <button class="opt" onclick="selectAuto(this,'presup','USD 50.000 – 100.000',6)"><span class="opt-dot"></span>USD 50.000 – 100.000</button>
+      <button class="opt" onclick="selectAuto(this,'presup','Más de USD 100.000',6)"><span class="opt-dot"></span>Más de USD 100.000</button>
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(4)">← Volver</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" id="s6">
+    <div class="step-label">06 — 07</div>
+    <div class="question">¿Cómo nos conociste?</div>
+    <div class="options" id="opts6">
+      <button class="opt" onclick="selectOrigen(this,'Instagram',false)"><span class="opt-dot"></span>Instagram</button>
+      <button class="opt" onclick="selectOrigen(this,'Recomendación',true)"><span class="opt-dot"></span>Recomendación</button>
+      <button class="opt" onclick="selectOrigen(this,'Ya conocía el estudio',false)"><span class="opt-dot"></span>Ya conocía el estudio</button>
+      <button class="opt" onclick="selectOrigen(this,'Otro',true)"><span class="opt-dot"></span>Otro</button>
+    </div>
+    <div id="extra-wrap" style="display:none" class="extra-input">
+      <input type="text" id="extra" placeholder="¿Quién te recomendó / contanos cómo?" oninput="checkExtra()" />
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(5)">← Volver</button>
+      <button class="btn-next" id="n6" onclick="goTo(7)" style="display:none">Continuar</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step" id="s7">
+    <div class="step-label">07 — 07</div>
+    <div class="question">¿Tenés imágenes, videos o planos?</div>
+    <div class="hint">No es obligatorio, pero nos ayuda a entender mejor tu espacio antes de la reunión.</div>
+    <div class="mail-note">
+      Si tenés material, enviánoslo a <a href="mailto:estudio@corvus.ar">estudio@corvus.ar</a> con el asunto "Reunión inicial — [tu nombre]".
+    </div>
+    <div class="nav">
+      <button class="btn-back" onclick="goTo(6)">← Volver</button>
+      <button class="btn-next" onclick="submitForm()">Finalizar →</button>
+    </div>
+  </div>
+
+  <!-- GRACIAS -->
+  <div class="step" id="s-thanks">
+    <div class="divider"></div>
+    <div class="thanks-title">Gracias por el tiempo dedicado a completar este cuestionario.</div>
+    <div class="thanks-body">
+      Cada proyecto parte de necesidades distintas, y estos datos nos permiten enfocar la reunión en aquello que es importante para vos.<br><br>
+      Ahora podés reservar el día y horario que te resulte más conveniente para nuestra primera reunión.
+    </div>
+    <a class="btn-cal" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3OEALnH2VmSxg8rAWw_O32zPKsLHGlQo-97JqpVoBsBFrHMIU67p6KvX6xE43rhQQtgXO-JeKa" target="_blank">Reservar turno</a>
+  </div>
+
+</div>
+
+<script>
+const data = {};
+const progSteps = [14, 28, 42, 57, 71, 85, 100];
+let current = 1;
+
+function goTo(n) {
+  const curEl = document.getElementById('s' + current) || document.getElementById('s-thanks');
+  if (curEl) curEl.classList.remove('active');
+  const nextEl = n === 8 ? document.getElementById('s-thanks') : document.getElementById('s' + n);
+  if (nextEl) nextEl.classList.add('active');
+  current = n;
+  const idx = Math.min(n, 7) - 1;
+  document.getElementById('prog').style.width = progSteps[idx] + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectAuto(el, key, val, nextStep) {
+  el.closest('.options').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  data[key] = val;
+  setTimeout(() => goTo(nextStep), 300);
+}
+
+function selectOrigen(el, val, needExtra) {
+  document.getElementById('opts6').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  data['origen'] = val;
+  const ew = document.getElementById('extra-wrap');
+  const btn = document.getElementById('n6');
+  if (needExtra) {
+    ew.style.display = 'block';
+    btn.style.display = 'inline-block';
+    btn.disabled = true;
+    data['origen_extra'] = '';
+    setTimeout(() => document.getElementById('extra').focus(), 50);
+  } else {
+    ew.style.display = 'none';
+    btn.style.display = 'none';
+    delete data['origen_extra'];
+    setTimeout(() => goTo(7), 300);
+  }
+}
+
+function checkExtra() {
+  const v = document.getElementById('extra').value.trim();
+  data['origen_extra'] = v;
+  document.getElementById('n6').disabled = v.length < 2;
+}
+
+function checkText(id, btnId) {
+  const v = document.getElementById(id).value.trim();
+  data[id] = v;
+  document.getElementById(btnId).disabled = v.length < 2;
+}
+
+async function submitForm() {
+  const body = new FormData();
+  body.append('_subject', 'Nueva consulta — Corvus Arquitectura');
+  body.append('Tipo de proyecto', data.tipo || '');
+  body.append('Ubicación', data.ubicacion || '');
+  body.append('Superficie', data.sup || '');
+  body.append('Objetivo', data.objetivo || '');
+  body.append('Presupuesto', data.presup || '');
+  body.append('Cómo nos conociste', data.origen || '');
+  body.append('Detalle', data.origen_extra || '');
+
+  try {
+    await fetch('https://formspree.io/f/mlgkoage', {
+      method: 'POST', body,
+      headers: { 'Accept': 'application/json' }
+    });
+  } catch(e) { console.warn('Formspree error', e); }
+
+  document.getElementById('s7').classList.remove('active');
+  document.getElementById('s-thanks').classList.add('active');
+  document.getElementById('prog').style.width = '100%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
