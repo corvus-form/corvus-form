@@ -4,16 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Corvus Arquitectura — Consulta inicial</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  @font-face {
-    font-family: 'Glamorise';
-    src: url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/cormorantgaramond/CormorantGaramond-Light.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-  }
 
   :root {
     --bg: #F9F6F1;
@@ -51,7 +44,7 @@
     margin-bottom: 2.5rem;
   }
   .logo-corvus {
-    font-family: 'Glamorise', 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 32px;
     font-weight: 300;
     letter-spacing: 0.06em;
@@ -441,20 +434,25 @@ function checkText(id, btnId) {
 }
 
 async function submitForm() {
-  const body = new FormData();
-  body.append('_subject', 'Nueva consulta — Corvus Arquitectura');
-  body.append('Tipo de proyecto', data.tipo || '');
-  body.append('Ubicación', data.ubicacion || '');
-  body.append('Superficie', data.sup || '');
-  body.append('Objetivo', data.objetivo || '');
-  body.append('Presupuesto', data.presup || '');
-  body.append('Cómo nos conociste', data.origen || '');
-  body.append('Detalle', data.origen_extra || '');
+  const payload = {
+    _subject: 'Nueva consulta — Corvus Arquitectura',
+    'Tipo de proyecto': data.tipo || '',
+    'Ubicación': data.ubicacion || '',
+    'Superficie': data.sup || '',
+    'Objetivo': data.objetivo || '',
+    'Presupuesto': data.presup || '',
+    'Cómo nos conociste': data.origen || '',
+    'Detalle': data.origen_extra || ''
+  };
 
   try {
     await fetch('https://formspree.io/f/mlgkoage', {
-      method: 'POST', body,
-      headers: { 'Accept': 'application/json' }
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
     });
   } catch(e) { console.warn('Formspree error', e); }
 
